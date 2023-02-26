@@ -1,0 +1,9 @@
+// cyclOps.cpp : Defines the exported functions for the DLL application.
+//
+
+// THIS IS NOT THE REAL CYCLOPS.CPP!!!
+
+#include "stdafx.h"
+
+
+bool g_boCyclOpsDebug = false;
