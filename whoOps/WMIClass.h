@@ -60,11 +60,11 @@ namespace whoOps {
 			std::vector<PROPERTY> getPropertyNamesBetween(PROPERTY begin, PROPERTY end);
 			std::vector<WMIClass::PROPERTY> getPropertiesAsVectorOfEnum(void) { return _properties; }
 			void addObjectWithProperties(WMI_PROPERTY_MAP obj) { _data.push_back(obj); }
-			std::vector<std::wstring> WMIClass::getPropertyNamesAsVectorOfString(void);
+			std::vector<std::wstring> getPropertyNamesAsVectorOfString(void);
 			std::string getStringProperty(WMIClass::PROPERTY property);
 			whoOps::wmi::Variant getPropertyAsVariant(WMIClass::PROPERTY property);
 			void addToVectorOfProperties(WMIClass::PROPERTY prop) { _properties.push_back(prop); }
-			std::string WMIClass::toString(void);
+			std::string toString(void);
 			size_t getDataSize() const { return _data.size(); }
 			WMI_PROPERTY_MAP getDataItem(int i) const { return _data[i]; }
 			void setHostname(const std::wstring& h) { _wstrHostname.assign(h); }

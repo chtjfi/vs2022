@@ -12,7 +12,7 @@ namespace cyclOps {
 		public:
 			JNIJunkie(JNIEnv *env, jobject obj, jstring input);
 			~JNIJunkie(void);
-			char* GetStringUTFChars(void);
+			const char* GetStringUTFChars(void);
 			void getArgumentArray(wchar_t wszArgumentArray[][5000], const int iArguments);
 			std::vector<std::string> getArgumentVector(void);
 	};

@@ -33,11 +33,11 @@ namespace whoOps {
 			}
 			unsigned long getFreeSpaceOnDriveInGB(const std::string& drive) { 
 				for (int i = 0; i < this->getDataSize(); ++i) {
-					whoOps::wmi::WMIClass::WMI_PROPERTY_MAP& mapOfPropertiesToVariants = this->getDataItem(i);
+					whoOps::wmi::WMIClass::WMI_PROPERTY_MAP mapOfPropertiesToVariants = this->getDataItem(i);
 					whoOps::wmi::Variant& variantDeviceID = mapOfPropertiesToVariants.map[whoOps::wmi::WMIClass::DeviceID];
-					std::string& strDriveLetter = variantDeviceID.getStringValueA(); CYCLOPSDEBUG("drive/strDriveLetter = %s/%s", drive.c_str(), strDriveLetter.c_str());
+					std::string strDriveLetter = variantDeviceID.getStringValueA(); CYCLOPSDEBUG("drive/strDriveLetter = %s/%s", drive.c_str(), strDriveLetter.c_str());
 					if (cyclOps::StringEmUp::compareIgnoreCase(drive, strDriveLetter) == 0) {
-						std::wstring& wstrFreeSpace = mapOfPropertiesToVariants.map[whoOps::wmi::WMIClass::FreeSpace].getStringValueW(); CYCLOPSDEBUG("wstrFreeSpace = '%S'", wstrFreeSpace.c_str());
+						std::wstring wstrFreeSpace = mapOfPropertiesToVariants.map[whoOps::wmi::WMIClass::FreeSpace].getStringValueW(); CYCLOPSDEBUG("wstrFreeSpace = '%S'", wstrFreeSpace.c_str());
 						unsigned long long ulSize = std::stoll(wstrFreeSpace); CYCLOPSVAR(ulSize, "%lu");
 						long lSize = (long) ulSize / (1024 * 1024 * 1024);
 						return lSize;
@@ -48,7 +48,7 @@ namespace whoOps {
 
 			void getLogicalDisks(std::vector<whoOps::LogicalDisk>& logicalDisks) const {
 				for (int i = 0; i < this->getDataSize(); ++i) {
-					whoOps::wmi::WMIClass::WMI_PROPERTY_MAP& mapRepresentingDisk = this->getDataItem(i);
+					whoOps::wmi::WMIClass::WMI_PROPERTY_MAP mapRepresentingDisk = this->getDataItem(i);
 					whoOps::wmi::Variant variantForSize = mapRepresentingDisk.map[whoOps::wmi::WMIClass::Size];
 					/* If the value of the Size property was VT_NULL this is a removable drive. */
 					if ( ! variantForSize.isNullType()) {

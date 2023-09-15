@@ -51,7 +51,9 @@ namespace cyclOps {
 		static std::string					substringAfterLastOccurrenceOfCharacter(const std::string& s, char c);
 		static std::string					substringAfterFirstOccurrenceOfCharacter(const std::string& s, char c);
 		static bool							equalsIgnoreCase(const std::string& s1, const std::string& s2);
-		static bool							in(const std::string& s1, std::vector<std::string> strings);
+		static bool							equalsIgnoreCaseW(const std::wstring& s1, const std::wstring& s2);
+		static bool							in(const std::string& s1, const std::vector<std::string>& strings);
+		static bool							inW(const std::wstring& s1, const std::vector<std::wstring>& strings);
 		static std::string					reverse(const std::string& original);
 	};
 }

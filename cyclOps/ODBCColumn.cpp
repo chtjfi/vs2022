@@ -23,7 +23,7 @@ namespace cyclOps {
 
 	struct ODBCColumnType {
 		SQLSMALLINT i; 
-		char* sz;
+		const char* sz;
 		ODBCColumn::HANDLE_AS handleAs;
 	};
 

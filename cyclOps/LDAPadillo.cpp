@@ -23,16 +23,16 @@ using cyclOps::ExceptionNoActiveEntries;
 
 namespace cyclOps {
 
-	char* LDAPadillo::ATTRIBUTE_DISTINGUISHED_NAME = "distinguishedName";
-	char* LDAPadillo::ATTRIBUTE_USER_ACCOUNT_CONTROL = "userAccountControl";
-	char* LDAPadillo::ATTRIBUTE_SAM_ACCOUNT_NAME = "sAMAccountName";
-	char* LDAPadillo::ATTRIBUTE_CN = "cn";
-	char* LDAPadillo::ATTRIBUTE_OPERATING_SYSTEM = "operatingSystem";
-	char* LDAPadillo::ATTRIBUTE_DESCRIPTION = "description";
-	char* LDAPadillo::ATTRIBUTE_MEMBER_OF = "memberOf";
-	char* LDAPadillo::ATTRIBUTE_MEMBER = "member";
-	char* LDAPadillo::ATTRIBUTE_DISPLAY_NAME = "displayName";
-	char* LDAPadillo::ATTRIBUTE_MAIL = "mail";
+	const char* LDAPadillo::ATTRIBUTE_DISTINGUISHED_NAME = "distinguishedName";
+	const char* LDAPadillo::ATTRIBUTE_USER_ACCOUNT_CONTROL = "userAccountControl";
+	const char* LDAPadillo::ATTRIBUTE_SAM_ACCOUNT_NAME = "sAMAccountName";
+	const char* LDAPadillo::ATTRIBUTE_CN = "cn";
+	const char* LDAPadillo::ATTRIBUTE_OPERATING_SYSTEM = "operatingSystem";
+	const char* LDAPadillo::ATTRIBUTE_DESCRIPTION = "description";
+	const char* LDAPadillo::ATTRIBUTE_MEMBER_OF = "memberOf";
+	const char* LDAPadillo::ATTRIBUTE_MEMBER = "member";
+	const char* LDAPadillo::ATTRIBUTE_DISPLAY_NAME = "displayName";
+	const char* LDAPadillo::ATTRIBUTE_MAIL = "mail";
 
 	void LDAPadillo::search(string strFilter, LDAP_ENTRY_VECTOR& entryVector) { CYCLOPSDEBUG("Hello.  strFilter = '%s'", strFilter.c_str());
 		LDAP* pLDAP = this->getLDAP();
@@ -48,9 +48,11 @@ namespace cyclOps {
 	void LDAPadillo::getEntryWithSpecifiedDN(const string& dn, LDAP_ENTRY& entry) {
 		LDAP* pLDAP = this->getLDAP();
 		LDAPMessage* pSearchResult;
-		char* pchFilter = "(objectClass=*)";
+		string strFilter;
+		char szFilter[500];
+		_snprintf_s(szFilter, sizeof(szFilter) / sizeof(szFilter[0]) - 1, "%s", "(objectClass=*)");
 		char* pchDN = StringEmUp::new_charArray(dn);
-		ldap_search_sA(pLDAP, pchDN, LDAP_SCOPE_BASE, pchFilter, NULL, 0, &pSearchResult); 
+		ldap_search_sA(pLDAP, pchDN, LDAP_SCOPE_BASE, szFilter, NULL, 0, &pSearchResult); 
 		delete[] pchDN;
 		ULONG iEntries = ldap_count_entries(pLDAP, pSearchResult);  CYCLOPSDEBUG("entries = %d", iEntries);   
 		
@@ -128,7 +130,7 @@ namespace cyclOps {
 		this->checkResult(result, "ldap_bind_sA");
 	}
 
-	void LDAPadillo::checkResult(ULONG result, char* szFunction) { CYCLOPSDEBUG("Hello.");
+	void LDAPadillo::checkResult(ULONG result, const char* szFunction) { CYCLOPSDEBUG("Hello.");
 		if (result != LDAP_SUCCESS) {
 			ULONG iLastError = LdapGetLastError();
 			CYCLOPS_THROW_EXCEPTION_IV(cyclOps::Exception, "%s() failed with error '%s'." , szFunction, ::ldap_err2stringA(iLastError));

@@ -21,7 +21,7 @@ using std::map;
 namespace cyclOps {
 	typedef struct {
 		DWORD dwError;
-		char* szError;
+		const char* szError;
 	} HTTPOPOTAMUS_ERROR;
 
 	HTTPOPOTAMUS_ERROR httpErrorTable[] = { 
@@ -143,7 +143,7 @@ namespace cyclOps {
 		}
 	}
 
-	char* HTTPopotamus::getErrorMessage(const DWORD dwError) {
+	const char* HTTPopotamus::getErrorMessage(const DWORD dwError) {
 		/* TODO:  This should be replaced with http://stackoverflow.com/questions/2159458/why-is-formatmessage-failing-to-find-a-message-for-wininet-errors/2159488#2159488 */
 		size_t iSize = sizeof(httpErrorTable) / sizeof(httpErrorTable[0]);
 		for (size_t i = 0; i < iSize; ++i) {
@@ -164,7 +164,7 @@ namespace cyclOps {
                           WINHTTP_NO_PROXY_BYPASS, 0 );
 		if (!hSession) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			stringstream ss;
 			ss << "Error during WinHttpOpen() - '" << szMessage << "'";
 			throw cyclOps::ExceptionHTTPopotamus(ss.str(), __FILE__, __FUNCTION__, __LINE__);
@@ -180,7 +180,7 @@ namespace cyclOps {
 			_iReceiveTimeoutMilliseconds); /* Receive timeout is set by caller. */
 		if (!boSuccess) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			CYCLOPS_THROW_EXCEPTION_IV(cyclOps::ExceptionHTTPopotamus, "Exception setting timeouts.  [%s]", szMessage);
 		}
 	}
@@ -189,7 +189,7 @@ namespace cyclOps {
 		HINTERNET hConnect = WinHttpConnect( hSession, _wstrHostname.c_str(), _iPort, 0 );
 		if( !hConnect ) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			stringstream ss;
 			ss << "Error during WinHttpConnect() - '" << szMessage << "'";
 			throw cyclOps::ExceptionHTTPopotamus(ss.str(), __FILE__, __FUNCTION__, __LINE__);
@@ -203,7 +203,7 @@ namespace cyclOps {
 
 		if( !hRequest ) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			stringstream ss;
 			ss << "Error during WinHttpOpenRequest() - '" << szMessage << "'";
 			throw cyclOps::ExceptionHTTPopotamus(ss.str(),  __FILE__, __FUNCTION__, __LINE__);
@@ -251,7 +251,7 @@ namespace cyclOps {
                                    0, 0 );
 		if (!boResults) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			stringstream ss;
 			ss << "Error during WinHttpSendRequest(): - '" <<
 				szMessage << " - hostname = " << this->getHostname() << 
@@ -263,7 +263,7 @@ namespace cyclOps {
 		BOOL boResults = WinHttpReceiveResponse( hRequest, NULL );
 		if (!boResults) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			stringstream ss;
 			ss << "Error during WinHttpReceiveResponse() - " << szMessage;
 			throw cyclOps::ExceptionHTTPopotamus(ss.str(),  __FILE__, __FUNCTION__, __LINE__);
@@ -294,7 +294,7 @@ namespace cyclOps {
 			DWORD dwDownloaded = 0;
 			if( ! WinHttpReadData( hRequest, (LPVOID) pszOutBuffer, dwSize, &dwDownloaded ) ) {
 				DWORD dwLastError = ::GetLastError();
-				char* szMessage = this->getErrorMessage(dwLastError);
+				const char* szMessage = this->getErrorMessage(dwLastError);
 				stringstream ss;
 				ss << "Error during WinHttpReadData() - " << szMessage;
 				throw cyclOps::ExceptionHTTPopotamus(ss.str(),  __FILE__, __FUNCTION__, __LINE__);
@@ -312,7 +312,7 @@ namespace cyclOps {
 		DWORD dwSize = 0;
 		if ( ! WinHttpQueryDataAvailable( hRequest, &dwSize )) {
 			DWORD dwLastError = ::GetLastError();
-			char* szMessage = this->getErrorMessage(dwLastError);
+			const char* szMessage = this->getErrorMessage(dwLastError);
 			stringstream ss;
 			ss << "Error during WinHttpQueryDataAvailable() - " << szMessage;
 			throw cyclOps::ExceptionHTTPopotamus(ss.str(),  __FILE__, __FUNCTION__, __LINE__);

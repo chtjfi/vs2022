@@ -128,7 +128,7 @@ namespace cyclOps {
 
 		/* If it starts with a backslash it is absolute or if it starts with a single letter 
 		   followed by a colon it is absolute (also c:abc). */
-		char *patternArray[]  = {"^\\\\.*", "^[a-zA-Z]:.*"};
+		const char *patternArray[]  = {"^\\\\.*", "^[a-zA-Z]:.*"};
 		string strPath(_wstrPath.begin(), _wstrPath.end());
 		for (int i = 0; i < (sizeof(patternArray) / sizeof(patternArray[0])); ++i) {
 			/* printf("%d : %s, %s\n", i, patternArray[i], _strPath.c_str()); */

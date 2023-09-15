@@ -36,14 +36,15 @@ namespace cyclOps {
 		~XMLigator(void);
 		void initializeFromFilename(const std::string& strFile);
 		void initializeFromString(const std::string& strXML);
+		std::string			getFilename(void) { return m_strFile;  }
 		std::string			getTextContent(const std::string& strElement) const;
 		std::wstring		getTextContentW(const std::string& strElement) const;
 		static std::string	getTextContent(const DOMNode* pNode, const std::string& strElement);
 		static std::wstring getTextContentW(const DOMNode* pNode, const std::string& strElement);
 		static int			getTextContentAs_int(const DOMNode* pNode, const std::string& strElement);
-		static int			getTextContentAs_int(const DOMNode* pNode, const std::string& strElement, int default);
+		static int			getTextContentAs_int(const DOMNode* pNode, const std::string& strElement, int iDefault);
 		int					getTextContentAs_int(const std::string& element);
-		int					getTextContentAs_int(const std::string& element, int default);
+		int					getTextContentAs_int(const std::string& element, int iDefault);
 		void				getNodeVector(const std::string& strElement, std::vector<DOMNode*>& vectorOfNodes) const;
 		void				getChildTextContentMap(const std::string& element, std::map<std::string, std::string>& map);
 		static void			getChildTextContentMap(const DOMNode* pNode, const std::string& element, std::map<std::string, std::string>& map);
@@ -79,7 +80,7 @@ namespace cyclOps {
 		/* Not yet implemented? */
 		/* static string documentToStringAlternate(xercesc::DOMDocument* pDocument); */
 		static xercesc::DOMDocument* 
-							createDocument(wchar_t* wszRootNodeName);
+							createDocument(const wchar_t* wszRootNodeName);
 		void				serialize(void);
 		static std::string	escapeXML(const std::string& strOriginal);
 		void				getVectorOfMaps(const std::string& element, std::vector<std::map<std::string, std::string>>& vectorOfMapsOfReportConfigs);

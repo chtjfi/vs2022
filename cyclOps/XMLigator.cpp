@@ -366,15 +366,15 @@ wstring cyclOps::XMLigator::getTextContentW(const DOMNode* pNode, const string& 
 	return vectorOfTextContent[0];
 }
 
-int cyclOps::XMLigator::getTextContentAs_int(const string& element, int default) {
+int cyclOps::XMLigator::getTextContentAs_int(const string& element, int iDefault) {
 	try {
 		return this->getTextContentAs_int(element);
 	} catch (const cyclOps::ExceptionNoSuchNode& e) {
-		CYCLOPSWARNING("No node %s, using default value %d (%s)", element.c_str(), default, e.what());
-		return default;
+		CYCLOPSWARNING("No node %s, using default value %d (%s)", element.c_str(), iDefault, e.what());
+		return iDefault;
 	} catch (const std::invalid_argument& e) {
-		CYCLOPSWARNING("Value %s is not an integer, using default value %d (%s)", element.c_str(), default, e.what());
-		return default;
+		CYCLOPSWARNING("Value %s is not an integer, using default value %d (%s)", element.c_str(), iDefault, e.what());
+		return iDefault;
 	}
 }
 
@@ -383,11 +383,11 @@ int cyclOps::XMLigator::getTextContentAs_int(const DOMNode* pNode, const string&
 	return std::stoi(strContent);
 }
 
-int cyclOps::XMLigator::getTextContentAs_int(const DOMNode* pNode, const string& strElement, int default) {
+int cyclOps::XMLigator::getTextContentAs_int(const DOMNode* pNode, const string& strElement, int iDefault) {
 	try {
 		return XMLigator::getTextContentAs_int(pNode, strElement);
 	} catch (const cyclOps::ExceptionNoSuchNode& ignore) {
-		return default;
+		return iDefault;
 	}
 }
 
@@ -454,7 +454,7 @@ void cyclOps::XMLigator::assertDocumentNotNull(int iLine) const {
 	}
 }
 
-xercesc::DOMDocument* cyclOps::XMLigator::createDocument(wchar_t* wszRootNodeName) { CYCLOPSDEBUG("Hello.");
+xercesc::DOMDocument* cyclOps::XMLigator::createDocument(const wchar_t* wszRootNodeName) { CYCLOPSDEBUG("Hello.");
 	try {
 		xercesc::XMLPlatformUtils::Initialize(); CYCLOPSDEBUG("Initialize() done.");
 		DOMImplementation* pDOMImplementation = DOMImplementationRegistry::getDOMImplementation(L"LS"); CYCLOPSDEBUG("pDOMImplementation = %p", pDOMImplementation );

@@ -32,7 +32,8 @@ bool cyclOpsLogDebugFilter(const char* szLevel, const char* szFile, const char* 
 	}
 }
 
-void cyclOpsLogToConsoleQND(char* szLevel, char* szFile, char* szFunction, int iLine, char* szFormat, ...) { 
+void cyclOpsLogToConsoleQND(const char* szLevel, const char* szFile, const char* szFunction, int iLine, 
+	const char* szFormat, ...) { 
 	/* if ( ! cyclOpsLogDebugFilter(szLevel, szFile, szFunction)) {
 		return;
 	} */

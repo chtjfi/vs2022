@@ -54,7 +54,9 @@ namespace whoOps {
 				if (FAILED(hres)) {
 					CYCLOPS_THROW_EXCEPTION_V(cyclOps::Exception, hres, cyclOps::Exception::TYPE_HRESULT, "Get() failed.");
 				}
-				hres = pSvc->ExecMethod(vtProp2.bstrVal, L"GetOwner", 0, NULL, NULL, &pmethodGetOwner, NULL);
+				const BSTR bstrGetOwner = SysAllocString(L"GetOwner");
+				hres = pSvc->ExecMethod(vtProp2.bstrVal, bstrGetOwner, 0, NULL, NULL, &pmethodGetOwner, NULL);
+				SysFreeString(bstrGetOwner);
 				if (FAILED(hres)) {
 					CYCLOPS_THROW_EXCEPTION_V(cyclOps::ExceptionNoSuchEntry, hres, cyclOps::Exception::TYPE_HRESULT, "ExecMethod() failed getting GetOwner().");
 				}

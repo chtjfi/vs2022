@@ -9,11 +9,11 @@
 #define HELO "HELO 192.168.1.1\r\n" 
 #define DATA "DATA\r\n" 
 #define QUIT "QUIT\r\n" 
-char *host_id="smtp.eu.scor.local"; 
-char *from_id="certus@scor.com"; 
-char *to_id="jfitzpatrick@scor.com"; 
-char *sub="testmail"; 
-char wkstr[100]="hello\r\n"; //"http://dcvprdcertas.eu.scor.local:7003/compliance/apps/ControlServlet\r\n"; 
+const char *host_id="smtp.eu.scor.local"; 
+const char *from_id="certus@scor.com";
+const char *to_id="jfitzpatrick@scor.com";
+const char *sub="testmail";
+const char wkstr[100]="hello\r\n"; //"http://dcvprdcertas.eu.scor.local:7003/compliance/apps/ControlServlet\r\n"; 
 
 using std::string;
 using std::vector;

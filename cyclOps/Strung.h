@@ -10,7 +10,7 @@ namespace cyclOps {
 		Strung(void) { }
 		~Strung(void) { }
 		Strung& set(const std::string& strVariable, const std::string& strValue);
-		Strung& Strung::set(const std::string& strVariable, const DWORD dwValue);
+		Strung& set(const std::string& strVariable, const DWORD dwValue);
 		Strung& set1000(const std::string& strVariable, const char* szFormat, ...);
 		/* Memory wasting Javaesque version. */
 		std::string format(const std::string& strFormat) const; 

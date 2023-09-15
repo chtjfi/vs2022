@@ -6,8 +6,8 @@ namespace cyclOps {
 	public:
 		explicit Pathiosocic(const std::wstring& wstrPath);
 		explicit Pathiosocic(const std::string& strPath);
-		explicit Pathiosocic::Pathiosocic(void);
-		void Pathiosocic::initialize(const std::wstring& wstrPath);
+		explicit Pathiosocic(void);
+		void initialize(const std::wstring& wstrPath);
 		~Pathiosocic(void);
 		std::string getDrive() const;
 		std::string getDir() const;

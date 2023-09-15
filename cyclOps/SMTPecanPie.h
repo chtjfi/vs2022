@@ -28,6 +28,6 @@ namespace cyclOps {
 		void readSocket(const SOCKET& socket);
 		void sendSocket(const SOCKET& sock, const char* s);
 		void haveConversation(const SOCKET& sock);
-		void SMTPecanPie::haveConversationII();
+		void haveConversationII();
 	};
 }

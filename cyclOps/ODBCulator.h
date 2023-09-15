@@ -41,13 +41,13 @@ namespace cyclOps {
 		SQLCHAR* _pchUser;
 		std::string _strPassword;
 		SQLCHAR* _pchPassword;
-		void ODBCulator::checkSQLRETURN(SQLRETURN reeturn, const std::string& msg, SQLSMALLINT handleType, SQLHANDLE handle, const std::string& statement);
+		void checkSQLRETURN(SQLRETURN reeturn, const std::string& msg, SQLSMALLINT handleType, SQLHANDLE handle, const std::string& statement);
 		void newDSNUserAndPassword();
 		void deleteDSNUserAndPassword();
 		void memcpy(SQLCHAR** ppchTarget, const std::string& strSource);
 		void status( SQLSMALLINT handleType, SQLHANDLE theHandle);
 		void fillResultSet(SQLHANDLE hStmt, ODBCResultSet& resultSet);
-		void ODBCulator::setColumns(ODBCResultSet& resultSet, SQLHANDLE hStmt);
-		void ODBCulator::addColumnToRow(const SQLHANDLE& hStmt, const ODBCColumn& i, std::map<std::string, std::string>& row);
+		void setColumns(ODBCResultSet& resultSet, SQLHANDLE hStmt);
+		void addColumnToRow(const SQLHANDLE& hStmt, const ODBCColumn& i, std::map<std::string, std::string>& row);
 	};
 }

@@ -13,7 +13,7 @@ namespace cyclOps {
 	public:
 		JNIResponse(void);
 		~JNIResponse(void);
-		void putProperty(std::string strProperty, char* szFormat, ...);
+		void putProperty(const std::string strProperty, const char* szFormat, ...);
 		void putProperty(const std::string& property, const std::string& value);
 		void putProperty(const std::string& property, const long& value);
 		std::string getPropertyMapAsXMLString();

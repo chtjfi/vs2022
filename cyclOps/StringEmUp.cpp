@@ -345,7 +345,12 @@ namespace cyclOps {
 		return ::_stricmp(s1.c_str(), s2.c_str()) == 0;
 	}
 
-	bool StringEmUp::in(const std::string& s1, vector<string> strings) { CYCLOPSDEBUG("s1 = %s", s1.c_str());
+	bool StringEmUp::equalsIgnoreCaseW(const wstring& s1, const wstring& s2) {
+		CYCLOPSDEBUG("s1/s2 = '%S'/'%S'", s1.c_str(), s2.c_str());
+		return ::_wcsicmp(s1.c_str(), s2.c_str()) == 0;
+	}
+
+	bool StringEmUp::in(const std::string& s1, const vector<string>& strings) { CYCLOPSDEBUG("s1 = %s", s1.c_str());
 		for (int i = 0; i < strings.size(); ++i) { CYCLOPSVAR(i, "%d");
 			string compareTo = strings[i]; CYCLOPSDEBUG("compareTo = %s", compareTo.c_str());
 			if (cyclOps::StringEmUp::equalsIgnoreCase(s1, compareTo)) { CYCLOPSDEBUG("Returning true.");
@@ -354,6 +359,20 @@ namespace cyclOps {
 		} CYCLOPSDEBUG("Returning false.");
 		return false;
 	}
+
+	bool StringEmUp::inW(const std::wstring& s1, const vector<wstring>& strings) {
+		CYCLOPSDEBUG("s1 = %S", s1.c_str());
+		for (int i = 0; i < strings.size(); ++i) {
+			CYCLOPSVAR(i, "%d");
+			wstring compareTo = strings[i]; CYCLOPSDEBUG("compareTo = %S", compareTo.c_str());
+			if (cyclOps::StringEmUp::equalsIgnoreCaseW(s1, compareTo)) {
+				CYCLOPSDEBUG("Returning true.");
+				return true;
+			}
+		} CYCLOPSDEBUG("Returning false.");
+		return false;
+	}
+
 
 	string StringEmUp::reverse(const string& original) {
 		string reversed;

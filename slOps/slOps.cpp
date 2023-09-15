@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <math.h>
+#include <boost/filesystem.hpp>
 #include "ExceptionFatale.h"
 #include "..\cyclOps\cyclOps.h"
 #include "ExceptionSourceFileMissing.h"
@@ -34,25 +35,48 @@ bool g_boSlOpsDebug = false;
 cyclOps::Logger g_slOpsLogger;
 
 extern "C" __declspec(dllexport) bool dllexportSlOpsCopyDirectory(const char *szSourceDir, const char *szTargetDir, 
-	bool boIncludeSubs, bool boPurge, bool boDebug, const char* szLogFile, bool boContinueOnCopyFailure)  { 
-	try {
-		g_boSlOpsDebug = boDebug; SLOPSDEBUG("szLogFile = %s", szLogFile); 
-		g_boCyclOpsDebug = boDebug; 
-		if (szLogFile != NULL) {
-			g_slOpsLogger.initializeLogFile(szLogFile);
-		} 
-		slOps::Synculator synculator; SLOPSDEBUG("synculator = %p", &synculator);
-		synculator.setIncludeSubdirectories(boIncludeSubs);
-		synculator.setPurge(boPurge);
-		synculator.setContinueOnCopyFailure(boContinueOnCopyFailure);
-		synculator.sync(szSourceDir, szTargetDir);
-		return synculator.isSuccesful();
-	} catch (const std::exception& e) { 
-		SLOPSERROR("%s - %s", e.what(), typeid(e).name());
-		return false;
-	} catch (...) { 
-		printf("Unknown exception. [%s - %d]\n", __FILE__, __LINE__);
-		return false;
+	bool boIncludeSubs, bool boPurge, bool boDebug, const char* szLogFile, bool boContinueOnCopyFailure)
+  { 
+	int iMaxRetries = 50;
+	int i = 0;
+	while (true) {
+		try {
+			g_boSlOpsDebug = boDebug; SLOPSDEBUG("szLogFile = %s", szLogFile);
+			g_boCyclOpsDebug = boDebug;
+			if (szLogFile != NULL) {
+				g_slOpsLogger.initializeLogFile(szLogFile);
+			}
+			slOps::Synculator synculator; SLOPSDEBUG("synculator = %p", &synculator);
+			synculator.setIncludeSubdirectories(boIncludeSubs);
+			synculator.setPurge(boPurge);
+			synculator.setContinueOnCopyFailure(boContinueOnCopyFailure);
+			synculator.sync(szSourceDir, szTargetDir);
+			return synculator.isSuccesful();
+		} catch (const boost::filesystem::filesystem_error  e) {
+			SLOPSERROR("SERVER OFFLINE? [ What: '%s' ] [ Type: %s ] [ Code: %d ]", 
+				e.what(), typeid(e).name(), e.code());
+			throw e;
+		} catch (const std::exception& e) {
+			SLOPSERROR("%s - %s", e.what(), typeid(e).name());
+			string error = e.what();
+			if (cyclOps::StringEmUp::containsIgnoreCase(error, "The process cannot access the file because it is being used by another process.")) {
+				return false;
+			} else if (i >= iMaxRetries) {
+				return false;
+			} else {
+				++i;
+				SLOPSERROR("Retrying, attempt %d...", i);
+			}
+		} catch (...) {
+			if (i >= iMaxRetries) {
+				printf("Unknown exception. [%s - %d]\n", __FILE__, __LINE__);
+				return false;
+			} else {
+				++i;
+				SLOPSERROR("Retrying, attempt %d...", i);
+
+			}
+		}
 	}
 }
 

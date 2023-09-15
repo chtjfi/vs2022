@@ -103,7 +103,7 @@ namespace slOps {
 			DWORD dwLastError = ::GetLastError(); SLOPSDEBUG("dwLastError = %d / ERROR_FILE_NOT_FOUND = %d", dwLastError, ERROR_FILE_NOT_FOUND);
 			whoOps::ErroroneousMonk error(dwLastError);
 			if (dwLastError == ERROR_FILE_NOT_FOUND) {
-				CYCLOPS_THROW_EXCEPTION_IV(slOps::ExceptionNoMatchingFiles, "No files matching %S can be found.  [%s]", 
+				CYCLOPS_THROW_EXCEPTION_IV(slOps::ExceptionNoMatchingFiles, "ERROR_FILE_NOT_FOUND (No files matching %S can be found.  [%s])", 
 					wstrSourceFileSpec.c_str(), error.formatMessage().c_str());
 			} else {
 				std::stringstream massage;
@@ -253,10 +253,12 @@ namespace slOps {
 		SLOPSINFO("Copy file target: '%S' [%d]", wstrTarget.c_str(), dwHandles);
 		this->setReadWrite(wstrTarget);
 		BOOL boReturn = ::CopyFileExW(wstrSource.c_str(), wstrTarget.c_str(), NULL, NULL, NULL, 0); 
-		if (!boReturn) {
+		if ( ! boReturn) {
 			whoOps::ErroroneousMonk error(::GetLastError());
 			std::string strError = error.formatMessage();
-			std::string strWhat = cyclOps::StringEmUp::format("CopyFileExW() failed with error: '%s'", strError.c_str());
+			std::string strWhat = cyclOps::StringEmUp::format("CopyFileExW() failed with error code %d: '%s'", 
+				error.getLastError(),
+				strError.c_str());
 			_boSuccesful = false;
 			if (_boContinueOnCopyFailure) {
 				CYCLOPSERROR("%s", strWhat.c_str());

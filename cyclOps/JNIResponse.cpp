@@ -23,7 +23,7 @@ namespace cyclOps {
 	{
 	}
 
-	void JNIResponse::putProperty(string strProperty, char* szFormat, ...) { CYCLOPSDEBUG("%s/%s", strProperty.c_str(), szFormat);
+	void JNIResponse::putProperty(const string strProperty, const char* szFormat, ...) { CYCLOPSDEBUG("%s/%s", strProperty.c_str(), szFormat);
 		va_list vaList;
 		va_start(vaList, szFormat);
 		char szValue[10000];

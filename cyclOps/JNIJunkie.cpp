@@ -13,10 +13,10 @@ cyclOps::JNIJunkie::JNIJunkie(JNIEnv *env, jobject obj, jstring jstringInput) {
 
 cyclOps::JNIJunkie::~JNIJunkie() { }
 
-char* cyclOps::JNIJunkie::GetStringUTFChars(void) {
+const char* cyclOps::JNIJunkie::GetStringUTFChars(void) {
 	const char *str = _pJNIEnv->GetStringUTFChars(*_pJstringInput, NULL);
 	if (str == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		CYCLOPSERROR("%s", szError);
 		return "poo"; //_pJNIEnv->NewStringUTF(szError);
 	}

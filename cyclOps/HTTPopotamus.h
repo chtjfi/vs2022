@@ -41,7 +41,7 @@ namespace cyclOps {
 		DWORD queryDataAvailable(HINTERNET hRequest);
 		void setTimeoutsPrivate(HINTERNET hSession);
 		/* TODO:  This should be replaced with http://stackoverflow.com/questions/2159458/why-is-formatmessage-failing-to-find-a-message-for-wininet-errors/2159488#2159488 */
-		char* getErrorMessage(const DWORD dwError);
+		const char* getErrorMessage(const DWORD dwError);
 		bool isDownloadToFile();
 		std::wstring _wstrHostname;
 		int _iPort;

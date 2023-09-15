@@ -49,7 +49,7 @@ void cyclOps::Logger::debug(char* szFile, char* szFunction, int iLine, char* szF
 	this->logAs("DEBUG", szFile, szFunction, iLine, szFormat, vaArguments);
 }
 
-void cyclOps::Logger::logAs(char* szLogLevel, char* szFile, char* szFunction, int iLine, char* szFormat, va_list vaList) {
+void cyclOps::Logger::logAs(const char* szLogLevel, const char* szFile, const char* szFunction, int iLine, const char* szFormat, va_list vaList) {
 	std::string strOutput = this->packageVariableArguments(szFormat, vaList);
 	this->log("%s: [%s(%s:%d)] %s", szLogLevel, szFunction, szFile, iLine, strOutput.c_str());
 }
@@ -60,7 +60,7 @@ void cyclOps::Logger::warn(char* szFile, char* szFunction, int iLine, char* szFo
 	this->logAs("WARNING", szFile, szFunction, iLine, szFormat, vaArguments);
 }
 
-void cyclOps::Logger::error(char* szFile, char* szFunction, int iLine, char* szFormat, ...) {
+void cyclOps::Logger::error(const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...) {
 	va_list vaArguments;
 	va_start(vaArguments, szFormat);
 	this->logAs("ERROR", szFile, szFunction, iLine, szFormat, vaArguments);
@@ -72,20 +72,20 @@ void cyclOps::Logger::fatal(char* szFile, char* szFunction, int iLine, char* szF
 	this->logAs("FATAL", szFile, szFunction, iLine, szFormat, vaArguments);
 }
 
-std::string cyclOps::Logger::packageVariableArguments(char* szFormat, va_list vaList) {
+std::string cyclOps::Logger::packageVariableArguments(const char* szFormat, va_list vaList) {
 	char szOutput[10000];
 	_vsnprintf_s(szOutput, sizeof(szOutput) / sizeof(szOutput[0]), _TRUNCATE, szFormat, vaList);
 	return std::string(szOutput);
 }
 
-void cyclOps::Logger::info(char* szFormat, ...) {
+void cyclOps::Logger::info(const char* szFormat, ...) {
 	va_list vaArguments;
 	va_start(vaArguments, szFormat);
 	std::string strOutput = this->packageVariableArguments(szFormat, vaArguments);
 	this->log("INFO: %s", strOutput.c_str());
 }
 
-void cyclOps::Logger::log(char* szFormat, ...)
+void cyclOps::Logger::log(const char* szFormat, ...)
 {
 	va_list vaArguments; 
 	va_start(vaArguments, szFormat); 
