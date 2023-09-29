@@ -147,7 +147,7 @@ extern char* g_szCyclOpsDebugFunction;
 
 
 void			cyclOpsLogToConsoleQND(const char* szLevel, const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...);
-void			cyclOpsLogToConsoleQNDW(wchar_t* wszLevel, char* szFile, char* szFunction, int iLine, wchar_t* wszFormat, ...);
+void			cyclOpsLogToConsoleQNDW(const wchar_t* wszLevel, const char* szFile, const char* szFunction, int iLine, const wchar_t* wszFormat, ...);
 std::string		cyclOpsGetCommandLineOptionII(int argc, char* argv[], char* pchOption);
 bool			cyclOpsGetCommandLineOption(int argc, char* argv[], char* pchOption, char* pchValue, int iValueSize);
 bool			cyclOpsGetCmdlineOptionClassic(char szOption[], char** ppchValue);

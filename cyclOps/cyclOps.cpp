@@ -54,7 +54,7 @@ void cyclOpsLogToConsoleQND(const char* szLevel, const char* szFile, const char*
 	}
 }
 
-void cyclOpsLogToConsoleQNDW(wchar_t* wszLevel, char* szFile, char* szFunction, int iLine, wchar_t* wszFormat, ...) { 
+void cyclOpsLogToConsoleQNDW(const wchar_t* wszLevel, const char* szFile, const char* szFunction, int iLine, const wchar_t* wszFormat, ...) { 
 	/* if ( ! cyclOpsLogDebugFilter(szLevel, szFile, szFunction)) {
 		return;
 	} */

@@ -62,10 +62,10 @@ To elaborate on this, winsock2.h is meant to be a replacement for winsock.h, the
 using std::wstring;
 using std::stringstream;
 
-char* whoOpsErrorFormatMessage(DWORD hResult)
+const char* whoOpsErrorFormatMessage(DWORD hResult)
 {
    char* szMessage = NULL;
-   char* szReturn = NULL;
+   const char* szReturn = NULL;
    if (::FormatMessageA(
 	   FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 
 	   NULL, 
@@ -155,7 +155,7 @@ void whoOpsPrivateTaskNewWorkItem(	LPCWSTR wszServer,	LPCWSTR wszTaskName,	LPCWS
   if (FAILED(hr))
   {
      CoUninitialize();
-	 char* szError = whoOpsErrorFormatMessage(hr);
+	 const char* szError = whoOpsErrorFormatMessage(hr);
 	 WHOOPSLOG("ERROR: Failed calling NewWorkItem, error = %s", szError);
      throw 3;
   }
@@ -193,7 +193,7 @@ void whoOpsPrivateTaskNewWorkItem(	LPCWSTR wszServer,	LPCWSTR wszTaskName,	LPCWS
   WHOOPSLOG("INFO: Created task.");
 }
 
-extern "C" __declspec(dllexport) char* dllexportWhoOpsTaskGetStatus(char* szServer, char* szTask) {
+extern "C" __declspec(dllexport) const char* dllexportWhoOpsTaskGetStatus(char* szServer, char* szTask) {
 	CYCLOPSVAR(szServer, "%s");	CYCLOPSVAR(szTask, "%s");
 	wchar_t wszServer[1000];
 	_snwprintf_s(wszServer, CYCLOPSSIZEOF(wszServer), _TRUNCATE, L"%S", szServer);
@@ -201,7 +201,7 @@ extern "C" __declspec(dllexport) char* dllexportWhoOpsTaskGetStatus(char* szServ
 	_snwprintf_s(wszTask, CYCLOPSSIZEOF(wszTask), _TRUNCATE, L"%S", szTask);
 	CYCLOPSVAR(wszServer, "%S"); CYCLOPSVAR(wszTask, "%S");
 	try {
-		char* szStatus = ::whoOpsTaskGetStatus(wszServer, wszTask);
+		const char* szStatus = ::whoOpsTaskGetStatus(wszServer, wszTask);
 		return szStatus;
 	} catch (int iException) {
 		CYCLOPSERROR("Exception thrown by ::whoOpsTaskGetStatus(). %d", iException);
@@ -212,17 +212,17 @@ extern "C" __declspec(dllexport) char* dllexportWhoOpsTaskGetStatus(char* szServ
 	}
 }
 
-char* whoOpsTaskGetStatus(LPCWSTR wszServer,	LPCWSTR wszTaskName) {
+const char* whoOpsTaskGetStatus(LPCWSTR wszServer,	LPCWSTR wszTaskName) {
 	ITask *pITask = whoOpsTaskGetTask(wszServer, wszTaskName);
 	HRESULT lStatus;
 	HRESULT hr = pITask->GetStatus(&lStatus);
 	if (FAILED(hr)) {
-		char* szError = ::whoOpsErrorFormatMessage(hr);
+		const char* szError = ::whoOpsErrorFormatMessage(hr);
 		CYCLOPSERROR("GetStatus failed [%s]", szError);
 		throw 42;
 	}
 	CYCLOPSVAR(lStatus, "%d");
-	char* szStatus = whoOpsTaskConvertStatusToString(lStatus);
+	const char* szStatus = whoOpsTaskConvertStatusToString(lStatus);
 	return szStatus;
 }
 
@@ -231,7 +231,7 @@ void whoOpsTaskGetMostRecentRunTime(LPCWSTR wszServer,	LPCWSTR wszTaskName, char
 	SYSTEMTIME systimeMostRecentRunTime;
 	HRESULT hr = pITask->GetMostRecentRunTime(&systimeMostRecentRunTime);
 	if (FAILED(hr)) {
-		char* szError = ::whoOpsErrorFormatMessage(hr);
+		const char* szError = ::whoOpsErrorFormatMessage(hr);
 		CYCLOPSERROR("GetMostRecentRunTime() failed [%s]", szError);
 		throw 73;
 	}
@@ -411,22 +411,22 @@ ITask* whoOpsTaskActivate(ITaskScheduler* pScheduler, LPCWSTR wszTaskName) {
 				  IID_ITask,
 				  (IUnknown**) &pITask);
 	if (FAILED(hr))	{
-		char* szError = ::whoOpsErrorFormatMessage(hr);
+		const char* szError = ::whoOpsErrorFormatMessage(hr);
 		CYCLOPSERROR("ITaskScheduler::Activate() returned 0x%x [%s]", hr, szError);
 		throw 5;
 	}
 	return pITask;
 }
-DWORD whoOpsErrorPrintLast(char* szFunctionName) {
+DWORD whoOpsErrorPrintLast(const char* szFunctionName) {
 	DWORD dwError = GetLastError();
-	char* szError = whoOpsErrorFormatMessage(dwError);
+	const char* szError = whoOpsErrorFormatMessage(dwError);
 	WHOOPSLOG("ERROR: %s() failed with %d \"%s\"", szFunctionName, dwError, szError);
 	return dwError;
 }
 
 // begin whoOpsService functions...
 void      whoOpsServiceGetError(DWORD dwCode, char* szStatus, size_t iSize) {
-	struct returnCode { DWORD dwCode; char* szString; };
+	struct returnCode { DWORD dwCode; const char* szString; };
 	returnCode returnCodeArray[] = { 
 		{ERROR_ACCESS_DENIED, "ERROR_ACCESS_DENIED"},
 		{ERROR_DATABASE_DOES_NOT_EXIST, "ERROR_DATABASE_DOES_NOT_EXIST"},
@@ -438,7 +438,7 @@ void      whoOpsServiceGetError(DWORD dwCode, char* szStatus, size_t iSize) {
 
 	for (int i = 0; returnCodeArray[i].dwCode != 7623845; ++i) {
 		if (dwCode == returnCodeArray[i].dwCode) {
-			char* szString = returnCodeArray[i].szString;
+			const char* szString = returnCodeArray[i].szString;
 			strncpy_s(szStatus, iSize, szString, _TRUNCATE);
 			return;
 		}
@@ -446,7 +446,7 @@ void      whoOpsServiceGetError(DWORD dwCode, char* szStatus, size_t iSize) {
 	strncpy_s(szStatus, iSize, "WHOOPS_UNKNOWN_ERROR", _TRUNCATE);
 }
 
-struct whoOpsServiceReturnCode { DWORD dwCode; char* szString; };
+struct whoOpsServiceReturnCode { DWORD dwCode; const char* szString; };
 
 whoOpsServiceReturnCode whoOpsServiceReturnCodeArray[] = { 
 		{ SERVICE_CONTINUE_PENDING, "SERVICE_CONTINUE_PENDING" },
@@ -471,7 +471,7 @@ string whoOpsServiceGetStringForStatusCode(DWORD dwCode) {
 void      whoOpsServiceGetStatus(DWORD dwCode, char* szStatus, size_t iSize) {
 	for (int i = 0; whoOpsServiceReturnCodeArray[i].dwCode != 7623845; ++i) {
 		if (dwCode == whoOpsServiceReturnCodeArray[i].dwCode) {
-			char* szString = whoOpsServiceReturnCodeArray[i].szString;
+			const char* szString = whoOpsServiceReturnCodeArray[i].szString;
 			strncpy_s(szStatus, iSize, szString, _TRUNCATE);
 			return;
 		}
@@ -543,7 +543,7 @@ void whoOpsServiceWaitUntil(const char* szServer, const char* szService, int iSe
 
 SC_HANDLE whoOpsServiceGetHandle(LPCWSTR wszServer, LPCWSTR wszService) {
 	SC_HANDLE hSCM = OpenSCManager(wszServer, NULL, SC_MANAGER_ALL_ACCESS);
-	char* szFailedFunction = NULL;
+	const char* szFailedFunction = NULL;
 	if (hSCM != NULL) {
 		SC_HANDLE hService = OpenService(hSCM, wszService, SC_MANAGER_ALL_ACCESS);
 		CloseServiceHandle(hSCM);
@@ -555,7 +555,7 @@ SC_HANDLE whoOpsServiceGetHandle(LPCWSTR wszServer, LPCWSTR wszService) {
 	} else {
 		szFailedFunction = "OpenSCManager";
 	}
-	char* szError = whoOpsErrorGetLastMessage();
+	const char* szError = whoOpsErrorGetLastMessage();
 	WHOOPS_THROW_EXCEPTION_II(whoOps::ExceptionWhoOps::UNABLE_TO_GET_SERVICE_HANDLE,
 		"%s() returned NULL.  Error was '%s'.", szFailedFunction, szError);
 }
@@ -575,7 +575,7 @@ void whoOpsServiceControlService(const wchar_t* wszServer, const wchar_t* wszSer
 	SERVICE_STATUS serviceStatus;
 	if (!ControlService(hService, dwControl, &serviceStatus)) {
 		/* What should I do? */
-		char* szMessage = whoOpsErrorGetLastMessage();
+		const char* szMessage = whoOpsErrorGetLastMessage();
 		CYCLOPSERROR("ControlService() failed: '%s'.", szMessage);
 	}
 }
@@ -620,7 +620,7 @@ void whoOpsServiceStart(LPCWSTR wszServer, LPCWSTR wszService) { CYCLOPSDEBUG("H
 		if (dwLastError == ERROR_SERVICE_ALREADY_RUNNING) {
 			CYCLOPSDEBUG("The service is already running.");
 		} else {
-			char* szLastError = ::whoOpsErrorFormatMessage(dwLastError);
+			const char* szLastError = ::whoOpsErrorFormatMessage(dwLastError);
 			CloseServiceHandle(hService);
 			WHOOPS_THROW_EXCEPTION("StartService() failed with the following error: '%s'.", szLastError);
 		}
@@ -650,7 +650,7 @@ extern "C" __declspec(dllexport) void whoOpsServiceQueryServiceStatus(LPCWSTR ws
 void whoOpsServiceQueryServiceStatusII(LPCWSTR wszServer, LPCWSTR wszService, SERVICE_STATUS* pServiceStatus) {
 		SC_HANDLE hService = whoOpsServiceGetHandle(wszServer, wszService);
 		if (!::QueryServiceStatus(hService, pServiceStatus)) {
-			char* szLastError = whoOpsErrorGetLastMessage();
+			const char* szLastError = whoOpsErrorGetLastMessage();
 			WHOOPS_THROW_EXCEPTION("QueryServiceStatus() failed: %s", szLastError);
 		}
 }
@@ -721,7 +721,7 @@ extern "C" __declspec(dllexport) void whoOpsRegistryGetREG_SZ(LPCSTR szServer, L
 		CYCLOPSVAR(lReturn, "%d");
 		if (lReturn != ERROR_SUCCESS) {
 			CYCLOPSERROR("RegConnectRegistryA() failed.");
-			char* szError = ::whoOpsErrorFormatMessage(lReturn);
+			const char* szError = ::whoOpsErrorFormatMessage(lReturn);
 			WHOOPSLOG("DEBUG: szError is %s", szError);
 			_snprintf_s(szReturn, iSize - 1, _TRUNCATE, "ERROR: %s", szError);
 			return;
@@ -733,7 +733,7 @@ extern "C" __declspec(dllexport) void whoOpsRegistryGetREG_SZ(LPCSTR szServer, L
 		lReturn = ::RegGetValueA(hKey, szKey, szValue, RRF_RT_REG_SZ, &dwType, (PVOID) szBuffer, &dwSize);
 		if (lReturn != ERROR_SUCCESS) {
 			CYCLOPSERROR("RegGetValueA() failed.");
-			char* szError = ::whoOpsErrorFormatMessage(lReturn);
+			const char* szError = ::whoOpsErrorFormatMessage(lReturn);
 			CYCLOPSVAR(szError, "%s");
 			_snprintf_s(szReturn, iSize - 1, _TRUNCATE, "ERROR: %s", szError);
 			CYCLOPSVAR(szReturn, "%s");
@@ -780,7 +780,7 @@ extern "C" __declspec(dllexport) NET_API_STATUS whoOpsNetLocalGroupAddMembersII(
 	NET_API_STATUS dwStatus = NetLocalGroupAddMembers(wszHost, wszLocalGroup, 3, (LPBYTE) &lmi3, 1);
 	if (dwStatus != NERR_Success) {
 		WHOOPSLOG("ERROR: NetLocalGroupAddMembers() returned %d", dwStatus);
-		char* szError = whoOpsErrorFormatMessage(dwStatus);
+		const char* szError = whoOpsErrorFormatMessage(dwStatus);
 		WHOOPSLOG("ERROR: which means \"%s\"", szError);
 	} else {
 		WHOOPSLOG("INFO: success!");
@@ -804,8 +804,7 @@ extern "C" __declspec(dllexport) boolean whoOpsNetLocalGroupDelMembers(wchar_t* 
 	NET_API_STATUS dwStatus = NetLocalGroupDelMembers(wszHost, wszLocalGroup, 3, (LPBYTE) &lmi3, 1);
 	if (dwStatus != NERR_Success) {
 		WHOOPSLOG("ERROR: NetLocalGroupDelMembers() returned %d", dwStatus);
-		char* szError = whoOpsErrorFormatMessage(dwStatus);
-		
+		const char* szError = whoOpsErrorFormatMessage(dwStatus);
 		WHOOPSLOG("ERROR: which means \"%s\"", szError);
 		return false;
 	}
@@ -863,7 +862,7 @@ extern "C" __declspec(dllexport) boolean whoOpsNetFileClose(wchar_t* wszHost, DW
 	NET_API_STATUS nasReturn = ::NetFileClose(wszHost, dwFileID);
 	if (nasReturn != NERR_Success) {
 		WHOOPSLOG("ERROR: NetFileClose() returned %d", nasReturn);
-		char* szError = whoOpsErrorFormatMessage(nasReturn);
+		const char* szError = whoOpsErrorFormatMessage(nasReturn);
 		WHOOPSLOG("ERROR: which means \"%s\"", szError);
 		return false;
 	}
@@ -928,7 +927,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_scheduleAndRunNative(JNIEnv 
 {
 	const char *str = env->GetStringUTFChars(input, NULL);
 	if (str == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -965,7 +964,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_runNative(JNIEnv *env, jobje
 {
 	const char *str = env->GetStringUTFChars(input, NULL);
 	if (str == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1001,7 +1000,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_runNative(JNIEnv *env, jobje
 
 	WHOOPSLOG("debug: About to ReleaseStringUTFChars().");
 	env->ReleaseStringUTFChars(input, str);
-	char* buf = "SUCCESS: all is good.";
+	const char* buf = "SUCCESS: all is good.";
 	return env->NewStringUTF(buf);
 }
 
@@ -1027,7 +1026,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_terminateNative(JNIEnv *env,
 }
 
 JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_getStatusNative(JNIEnv *env, jobject obj, jstring input) {
-	char* szReturn;
+	const char* szReturn;
 	try {
 		cyclOps::JNIJunkie jniJunkie(env, obj, input);
 		// This second dimension must match the declaration of getArgumentArray(). See http://www.cplusplus.com/forum/general/11627/
@@ -1045,7 +1044,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_deleteNative(JNIEnv *env, jo
 {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1083,13 +1082,13 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_deleteNative(JNIEnv *env, jo
 		return env->NewStringUTF(szError);
 	}
 	env->ReleaseStringUTFChars(input, szInput);
-	char* buf = "SUCCESS: all is good.";
+	const char* buf = "SUCCESS: all is good.";
 	return env->NewStringUTF(buf);
 }
 JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_restartNative(JNIEnv *env, jobject obj, jstring input) {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1125,14 +1124,14 @@ JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_restartNative(JNIEnv *env, 
 		return env->NewStringUTF(szError);
 	}
 	env->ReleaseStringUTFChars(input, szInput);
-	char* buf = "SUCCESS: all is good.";
+	const char* buf = "SUCCESS: all is good.";
 	return env->NewStringUTF(buf);
 }
 JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_scheduleNative(JNIEnv *env, jobject obj, jstring input)
 {
 	const char *str = env->GetStringUTFChars(input, NULL);
 	if (str == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1163,13 +1162,13 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_scheduleNative(JNIEnv *env, 
 		return env->NewStringUTF(szError);
 	}
 	env->ReleaseStringUTFChars(input, str);
-	char* buf = "SUCCESS: all is good.";
+	const char* buf = "SUCCESS: all is good.";
 	return env->NewStringUTF(buf);
 }
 JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_getServiceStatusNative(JNIEnv *env, jobject obj, jstring input) {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1194,7 +1193,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_getServiceStatusNative(JNIE
 JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_stopServiceNative(JNIEnv *env, jobject obj, jstring input) {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1238,13 +1237,13 @@ JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_stopServiceNative(JNIEnv *e
 		return env->NewStringUTF(szError);
 	}
 	env->ReleaseStringUTFChars(input, szInput);
-	char* buf = "SUCCESS: Service stopped.";
+	const char* buf = "SUCCESS: Service stopped.";
 	return env->NewStringUTF(buf);
 }
 JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_startServiceNative(JNIEnv *env, jobject obj, jstring input) {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1281,13 +1280,13 @@ JNIEXPORT jstring JNICALL Java_whoOps_ServiceMangler_startServiceNative(JNIEnv *
 		return env->NewStringUTF(szError);
 	}
 	env->ReleaseStringUTFChars(input, szInput);
-	char* buf = "SUCCESS: Service running.";
+	const char* buf = "SUCCESS: Service running.";
 	return env->NewStringUTF(buf);
 }
 JNIEXPORT jstring JNICALL Java_whoOps_RegistryRaptor_getREG_1SZNative(JNIEnv * env, jobject obj, jstring input) {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1313,7 +1312,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_RegistryRaptor_getREG_1SZNative(JNIEnv * e
 JNIEXPORT jstring JNICALL Java_whoOps_FileVersionFlunky_getFileVersionNative(JNIEnv * env, jobject obj, jstring input) {
 	const char *szInput = env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1332,7 +1331,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_FileVersionFlunky_getFileVersionNative(JNI
 JNIEXPORT jstring JNICALL Java_whoOps_ProcessOpotamus_createProcessNative(JNIEnv * env, jobject obj, jstring input) {
 	char *szInput = (char*) env->GetStringUTFChars(input, NULL);
 	if (szInput == NULL) {
-		char* szError = "ERROR: GetStringUTFChars returned NULL";
+		const char* szError = "ERROR: GetStringUTFChars returned NULL";
 		WHOOPSLOG(szError);
 		return env->NewStringUTF(szError);
 	}
@@ -1350,7 +1349,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_ProcessOpotamus_createProcessNative(JNIEnv
 
 }
 
-extern "C" __declspec(dllexport) char* dllexportWhoOpsTaskTerminate(char* szServer, char* szTask) {
+extern "C" __declspec(dllexport) const char* dllexportWhoOpsTaskTerminate(char* szServer, char* szTask) {
 	CYCLOPSVAR(szServer, "%s"); CYCLOPSVAR(szTask, "%s");
 	try {
 		::whoOpsTaskTerminate(szServer, szTask);
@@ -1524,7 +1523,7 @@ JNIEXPORT jstring JNICALL Java_whoOps_TaskScheduler_getAllInformationNativeII(JN
 }
 
 
-char* whoOpsTaskConvertStatusToString(HRESULT lStatus) {
+const char* whoOpsTaskConvertStatusToString(HRESULT lStatus) {
 	switch(lStatus) {
 		case SCHED_S_TASK_READY:
 			return "SCHED_S_TASK_READY";
@@ -1563,7 +1562,7 @@ extern "C" __declspec(dllexport) int dllexportWhoOpsACLAddACEToDACL(
 		}
 }
 
-extern "C" __declspec(dllexport) char* dllexportWhoOpsErrorFormatMessage(DWORD dwError) {
+extern "C" __declspec(dllexport) const char* dllexportWhoOpsErrorFormatMessage(DWORD dwError) {
 	return ::whoOpsErrorFormatMessage(dwError);
 }
 
@@ -1665,7 +1664,7 @@ WHOOPS_RESULT whoOpsServiceStopOrStart(WHOOPS_SERVICE_ACTION action, const char*
 	return result;
 }
 
-extern "C" __declspec(dllexport) char* dllexportWhoOpsGetMessageForResult(WHOOPS_RESULT result) {
+extern "C" __declspec(dllexport) const char* dllexportWhoOpsGetMessageForResult(WHOOPS_RESULT result) {
 	switch (result) {
 	/* This is what a return result should be initialized to. */
 	case WHOOPS_NO_STATUS:				return "No return status was set (programming error)."; break; 
@@ -1687,7 +1686,7 @@ extern "C" __declspec(dllexport) void dllexportWhoOpsSetDebug(bool boDebug) {
 	::g_boCyclOpsDebug = boDebug;
 }
 
-char* whoOpsErrorGetLastMessage(void) {
+const char* whoOpsErrorGetLastMessage(void) {
 	DWORD dwLastError = ::GetLastError();
 	return ::whoOpsErrorFormatMessage(dwLastError);
 }
@@ -1744,7 +1743,7 @@ QUERY_SERVICE_CONFIG* whoOpsServiceQueryServiceConfig(const char* szServer, cons
 	DWORD dwBufferSize = dwBytesNeeded;
 	pQueryServiceConfig = (QUERY_SERVICE_CONFIG*) LocalAlloc(LMEM_FIXED, dwBufferSize);
 	if (!QueryServiceConfig(serviceHandle, pQueryServiceConfig, dwBufferSize, &dwBytesNeeded)) {
-		char* szMessage = ::whoOpsErrorGetLastMessage();
+		const char* szMessage = ::whoOpsErrorGetLastMessage();
 		CloseServiceHandle(serviceHandle);
 		WHOOPS_THROW_EXCEPTION("QueryServiceConfig() failed with the following: '%s'", szMessage);
 	}
@@ -1818,7 +1817,7 @@ extern "C" __declspec(dllexport) bool dllexportWhoOpsRegOpenKeyEx(const char * s
 }
 
 void whoOpsAddBackslashesToServerIfNecessary(wchar_t* wszServerWithBackslashes, size_t iSize, const wchar_t* wszServerOriginal) {
-	wchar_t* wszPrefix = L"\\\\";
+	const wchar_t* wszPrefix = L"\\\\";
 	if (wcsncmp(L"\\\\", wszServerOriginal, 2) == 0) {
 		wszPrefix = L"";
 	}

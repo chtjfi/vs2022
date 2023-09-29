@@ -24,7 +24,7 @@ namespace cyclOps {
 		void debug(char* szFile, char* szFunction, int iLine, char* szFormat, ...);
 		void error(const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...);
 		void fatal(char* szFile, char* szFunction, int iLine, char* szFormat, ...);
-		void raw(char* szOutput, size_t iSize);
+		void raw(const char* szOutput, size_t iSize);
 		void logAs(const char* szLogLevel, const char* szFile, const char* szFunction, int iLine, const char* szFormat, va_list vaList);
 		void initializeLogFile(const std::string& strLogFile);
 		bool isLogFileInitialized(void);

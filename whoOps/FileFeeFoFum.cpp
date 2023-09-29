@@ -377,7 +377,7 @@ namespace whoOps {
 		struct _stat64 buf;
 		int result = _stati64( this->_path.getAbsolutePath().c_str(), &buf);
 		if( result != 0 ) {
-			char* pchError;
+			const char* pchError;
 			int myErrno = errno;
 			switch (myErrno) {
 				case ENOENT:

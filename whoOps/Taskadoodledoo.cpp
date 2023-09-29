@@ -44,7 +44,7 @@ namespace whoOps {
 
 	struct State {
 		TASK_STATE state;
-		char* name;
+		const char* name;
 	};
 
 	State STATES[] = {
@@ -323,7 +323,8 @@ namespace whoOps {
 			CYCLOPS_THROW_EXCEPTION_IV(whoOps::ExceptionTaskadoodledoo, "NULL passed in pServce.  Someone forgot to initialize the service!");
 		}
 		ITaskFolder* pFolder = 0;
-		HRESULT hResult = pService->GetFolder(L"\\", &pFolder); CYCLOPSVAR(hResult, "%x");
+		BSTR bstr = ::SysAllocString(L"\\");
+		HRESULT hResult = pService->GetFolder(bstr, &pFolder); CYCLOPSVAR(hResult, "%x");
 		if (FAILED(hResult)) {
 			CYCLOPS_THROW_EXCEPTION_V(whoOps::ExceptionTaskadoodledoo, hResult, cyclOps::Exception::TYPE_HRESULT, "ITaskService::GetFolder() failed.");
 		}
@@ -540,9 +541,13 @@ namespace whoOps {
 		if (FAILED(hr)) {
 	        pTask->Release();
 			CYCLOPS_THROW_EXCEPTION_V(whoOps::ExceptionTaskadoodledoo, hr, cyclOps::Exception::TYPE_HRESULT, "ITrigger::QueryInterface() failed for %s", serverAndTask.c_str());
-	   }
-		hr = pRegistrationTrigger->put_Id( _bstr_t( L"Trigger1" ) );
-		hr = pRegistrationTrigger->put_Delay( L"PT30S" );
+		}
+		BSTR bstrID = ::SysAllocString(L"Trigger1");
+		hr = pRegistrationTrigger->put_Id( bstrID );
+		::SysFreeString(bstrID);
+		BSTR bstrDelay = ::SysAllocString(L"PT30S");
+		hr = pRegistrationTrigger->put_Delay( bstrDelay );
+		::SysFreeString(bstrDelay);
 		pRegistrationTrigger->Release();
 		if (FAILED(hr)) {
 	        pTask->Release();

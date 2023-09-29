@@ -14,9 +14,9 @@ namespace whoOps {
 			~ExceptionWhoOps(void);
 			// virtual const char* what() const throw() { return m_szMessage; }
 			// void setWhat(char* szFormat, ...);
-			static void throwMe(char* szFile, char* szFunction, int iLine, char* szFormat, ...);
-			static void throwMeII(Code iCode, char* szFile, char* szFunction, int iLine, char* szFormat, ...);
-			void setWhat(char* szFormat, ...);
+			static void throwMe(const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...);
+			static void throwMeII(Code iCode, const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...);
+			void setWhat(const char* szFormat, ...);
 			virtual const char* what() const throw() { return m_szMessage; }
 			Code getCode() { return _code; }
 			void setCode(Code code) { _code = code; }

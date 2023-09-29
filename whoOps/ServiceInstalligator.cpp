@@ -39,7 +39,7 @@ void whoOps::ServiceInstalligator::copyFiles() {
 void whoOps::ServiceInstalligator::CreateService() {
 	SC_HANDLE hSCManager = OpenSCManagerA(_strServer.c_str(), NULL, SC_MANAGER_ALL_ACCESS);
 	if (hSCManager == NULL) {
-		char* szLastError = ::whoOpsErrorGetLastMessage();
+		const char* szLastError = ::whoOpsErrorGetLastMessage();
 		WHOOPS_THROW_EXCEPTION("%s", szLastError);
 	}
 	::CreateServiceA(

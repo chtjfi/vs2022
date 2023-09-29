@@ -11,13 +11,13 @@ whoOps::ExceptionWhoOps::~ExceptionWhoOps(void)
 {
 }
 
-void whoOps::ExceptionWhoOps::setWhat(char* szFormat, ...) {
+void whoOps::ExceptionWhoOps::setWhat(const char* szFormat, ...) {
 	va_list vaArguments;
 	va_start(vaArguments, szFormat);
 	_vsnprintf_s(m_szMessage, CYCLOPSSIZEOF(m_szMessage), _TRUNCATE, szFormat, vaArguments);
 }
 
-void whoOps::ExceptionWhoOps::throwMe(char* szFile, char* szFunction, int iLine, char* szFormat, ...) {
+void whoOps::ExceptionWhoOps::throwMe(const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...) {
 	char szMessage[5000];
 	va_list vaArguments;
 	va_start(vaArguments, szFormat);
@@ -25,7 +25,7 @@ void whoOps::ExceptionWhoOps::throwMe(char* szFile, char* szFunction, int iLine,
 	whoOps::ExceptionWhoOps::throwMeII(UNSPECIFIED, szFile, szFunction, iLine, szMessage);
 }
 
-void whoOps::ExceptionWhoOps::throwMeII(Code code, char* szFile, char* szFunction, int iLine, char* szFormat, ...) {
+void whoOps::ExceptionWhoOps::throwMeII(Code code, const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...) {
 	char szMessage[5000];
 	va_list vaArguments;
 	va_start(vaArguments, szFormat);

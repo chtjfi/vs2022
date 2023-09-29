@@ -48,11 +48,11 @@ void whoOpsTaskGetExitCode(	LPCWSTR wszServer,	LPCWSTR wszTaskName,	DWORD* pdwEx
 	HRESULT* hResult);
 
 ITask* whoOpsTaskGetTask(LPCWSTR wszServer, LPCWSTR wszTaskName);
-char* whoOpsTaskGetStatus(LPCWSTR wszServer,	LPCWSTR wszTaskName);
-char* whoOpsTaskConvertStatusToString(HRESULT lStatus);
-char* whoOpsErrorFormatMessage(DWORD hResult);
+const char* whoOpsTaskGetStatus(LPCWSTR wszServer,	LPCWSTR wszTaskName);
+const char* whoOpsTaskConvertStatusToString(HRESULT lStatus);
+const char* whoOpsErrorFormatMessage(DWORD hResult);
 void whoOpsTaskTerminate(char* szServer, char* szTaskName);
-char* whoOpsErrorGetLastMessage(void);
+const char* whoOpsErrorGetLastMessage(void);
 
 typedef enum {
 	WHOOPS_START,

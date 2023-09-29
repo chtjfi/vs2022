@@ -106,6 +106,14 @@ namespace cyclOps {
 		}
 		return false;
 	}
+
+	string CommandLinebacker::getOption(const string& strOption) const {
+		char szValue[5000];
+		if (!this->getOption(strOption.c_str(), szValue, CYCLOPSSIZEOF(szValue))) {
+			CYCLOPS_THROW_EXCEPTION_IV(cyclOps::ExceptionOptionNotSet, "Command line argument '%s' not found.", strOption.c_str());
+		}
+		return std::string(szValue);
+	}
 	
 	string CommandLinebacker::getOption(const char* pchOption) const {
 		char szValue[5000];
@@ -120,7 +128,7 @@ namespace cyclOps {
 		return wstring(strValue.begin(), strValue.end());
 	}
 
-	string CommandLinebacker::getOption(char* pchOption, const string& strDefault) const { CYCLOPSDEBUG("Hello");
+	string CommandLinebacker::getOption(const char* pchOption, const string& strDefault) const { CYCLOPSDEBUG("Hello");
 		char szValue[5000];
 		if ( ! this->getOption(pchOption, szValue, CYCLOPSSIZEOF(szValue))) {
 			return strDefault;
@@ -147,7 +155,7 @@ namespace cyclOps {
 		}
 	}
 
-	void CommandLinebacker::getOption(const string& option, string& value) const { CYCLOPSDEBUG("option = %s", option);
+	/* void CommandLinebacker::getOption(const string& option, string& value) const { CYCLOPSDEBUG("option = %s", option);
 		char szValue[5000];
 		bool boResult = this->getOption(option.c_str(), szValue, (sizeof(szValue) / sizeof(szValue[0])) - 1); 
 		if (boResult) {		CYCLOPSDEBUG("szValue = %s", szValue);
@@ -155,7 +163,7 @@ namespace cyclOps {
 		} else {
 			CYCLOPS_THROW_EXCEPTION_IV(cyclOps::ExceptionOptionNotSet, "The option /%s is not set.", option.c_str());
 		}
-	}
+	} */
 
 	void CommandLinebacker::getFileNameFromExecutable(string& value, const string& extension) const { CYCLOPSDEBUG("argv[0] = %s", _argv[0]);
 		Pathiosocic path(this->_argv[0]);

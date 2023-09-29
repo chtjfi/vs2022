@@ -104,7 +104,7 @@ HKEY whoOps::RegistryRhinoceros::RegConnectRegistry(const string& strHostname)
 		HKEY_LOCAL_MACHINE, 
 		&hKey);
 	if (lReturn != ERROR_SUCCESS) {
-		char* szError = ::whoOpsErrorFormatMessage(lReturn);
+		const char* szError = ::whoOpsErrorFormatMessage(lReturn);
 		::WHOOPS_THROW_EXCEPTION("Error during RegConnectRegistryA() - '%s'", szError);
 	}
 	return hKey;

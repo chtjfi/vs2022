@@ -115,7 +115,7 @@ void cyclOps::Logger::logWithoutTimestamp(char* szFormat, ...)
 }
 
 
-void cyclOps::Logger::raw(char* szOutput, size_t iSize)
+void cyclOps::Logger::raw(const char* szOutput, size_t iSize)
 {
 	/* This guy is useful for outputting the stdout from a process launched with ProcessPrincess. 
 	   It omits timestamps and newlines and writes to the file in binary mode. */

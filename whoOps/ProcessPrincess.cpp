@@ -116,7 +116,7 @@ DWORD whoOps::ProcessPrincess::CreateProcessII(char* szCommandLine, cyclOps::Log
     DWORD nBytesRead;
 
 	
-	char* szLine = "================================================\n";
+	const char* szLine = "================================================\n";
 
 	if (false) {
 		if (pLogger != NULL) pLogger->log("Output of %s follows:", szCommandLine); CYCLOPSDEBUG("Rolling...");

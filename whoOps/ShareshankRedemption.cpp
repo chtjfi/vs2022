@@ -257,7 +257,7 @@ namespace whoOps {
 
 	struct ShareInfoParameter {
 		DWORD param;
-		char* szName;
+		const char* szName;
 	};
 
 	ShareInfoParameter SHARE_INFO_PARAMETERS[] = {
