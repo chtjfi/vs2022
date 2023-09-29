@@ -180,6 +180,12 @@
     <ClCompile Include="..\whoOps\WMIClass.cpp" />
     <ClCompile Include="UTF-16toSTDOUT.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="UTF-16toSTDOUT.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

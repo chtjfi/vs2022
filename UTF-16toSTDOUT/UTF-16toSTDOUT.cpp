@@ -27,9 +27,9 @@ namespace spacename {
 		/*********************************************/
 		/* !!! USE _logger TO LOG EVERYTHING NOW !!! */
 		/*********************************************/
+		vector<wstring> vectorOfLines;
 		string path = cmd.getOptionInPosition(1);
 		whoOps::FileFeeFoFum file(path);
-		vector<wstring> vectorOfLines;
 		file.getContentsAsVectorUTF16LittleEndian_II(vectorOfLines);
 		for (int i = 0; i < vectorOfLines.size(); ++i) {
 			wstring output = vectorOfLines[i];
