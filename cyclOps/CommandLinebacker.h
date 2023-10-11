@@ -26,7 +26,7 @@ namespace cyclOps {
 		std::string		getOption(const char* pchOption) const;
 		std::string		getOption(const std::string& strOption) const;
 		/* void			getOption(const std::string& option, std::string& value) const;  //Still in .cpp if you need it. */
-		std::string		getOption(const char* pchOption, const std::string& strDefault) const;
+		std::string		getOptionWithDefault(const char* pchOption, const std::string& strDefault) const;
 
 		std::wstring	getOptionW(const std::string& s) const;
 		std::string getOptionInPosition(const int& iPosition) const;

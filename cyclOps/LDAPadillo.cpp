@@ -45,6 +45,19 @@ namespace cyclOps {
 		this->fillEntryVector(pLDAP, pSearchResult, entryVector);
 	}
 
+	void LDAPadillo::search_paged(string strFilter, LDAP_ENTRY_VECTOR& entryVector) {
+		CYCLOPSDEBUG("Hello.  strFilter = '%s'", strFilter.c_str());
+		LDAP* pLDAP = this->getLDAP();
+		LDAPMessage* pSearchResult;
+		char szFilter[1000];
+		CYCLOPS_SNPRINTF_S(szFilter, "%s", strFilter.c_str());
+		char* pchBase = cyclOps::StringEmUp::new_charArray(_strBaseDN);
+		ldap_search_init_pageA(pLDAP, pchBase, LDAP_SCOPE_SUBTREE, szFilter, NULL, 0, &pSearchResult);
+		delete[] pchBase;
+		this->fillEntryVector(pLDAP, pSearchResult, entryVector);
+	}
+
+
 	void LDAPadillo::getEntryWithSpecifiedDN(const string& dn, LDAP_ENTRY& entry) {
 		LDAP* pLDAP = this->getLDAP();
 		LDAPMessage* pSearchResult;
@@ -66,10 +79,9 @@ namespace cyclOps {
 
 	void LDAPadillo::printEntry(const LDAP_ENTRY& entry) {
 		for (LDAP_ENTRY::const_iterator iterator = entry.begin(); iterator != entry.end(); ++iterator) {
-			printf("%s\n", iterator->first.c_str());
 			vector<string> vals = iterator->second;
 			for (int j = 0; j < vals.size(); ++j) {
-				printf("\t%s\n", vals[j].c_str());
+				printf("%s\t%s\n", iterator->first.c_str(), vals[j].c_str());
 			}
 		}
 

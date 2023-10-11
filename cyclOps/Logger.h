@@ -21,7 +21,7 @@ namespace cyclOps {
 		void logWithoutTimestamp(char* szFormat, ...);
 		void info(const char* szFormat, ...);
 		void warn(char* szFile, char* szFunction, int iLine, char* szFormat, ...);
-		void debug(char* szFile, char* szFunction, int iLine, char* szFormat, ...);
+		void debug(const char* szFile, char* szFunction, int iLine, char* szFormat, ...);
 		void error(const char* szFile, const char* szFunction, int iLine, const char* szFormat, ...);
 		void fatal(char* szFile, char* szFunction, int iLine, char* szFormat, ...);
 		void raw(const char* szOutput, size_t iSize);

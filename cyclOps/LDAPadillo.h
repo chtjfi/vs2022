@@ -20,6 +20,7 @@ namespace cyclOps {
 		LDAPadillo&			setBaseDN(const std::string& strBaseDN) { _strBaseDN.assign(strBaseDN); return *this; }
 		LDAPadillo&			setDomain(const std::string& strDomain) { _strDomain.assign(strDomain); return *this; }
 		void				search(std::string, LDAP_ENTRY_VECTOR& results);
+		void				search_paged(std::string, LDAP_ENTRY_VECTOR& results);
 		static std::string	getDistinguishedNameFromName(const std::string&);
 		static std::string	getCountryFromDistinguishedName(const std::string& strDistinguishedName);
 		static LDAP_ENTRY	getFirstActiveEntry(const LDAP_ENTRY_VECTOR& v);

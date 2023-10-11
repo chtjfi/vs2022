@@ -17,8 +17,7 @@ cyclOps::Logger::Logger() :	m_strLogFile(cyclOps::Logger::MAGIC_WORD_NOT_INITIAL
 
 const char* cyclOps::Logger::MAGIC_WORD_NOT_INITIALIZED = "NOT_INITIALIZED";
 
-void cyclOps::Logger::initializeLogFile(const string& strLogFile)
-{
+void cyclOps::Logger::initializeLogFile(const string& strLogFile) {
 	/* You might try to initialize a Logger with the log file name (string) of another Logger.
 	   However, that Logger might not have been initialized, and the string returned by 
 	   getLogFileName() will be MAGIC_WORD_NOT_INITIALIZED, which will have been passed to 
@@ -33,7 +32,6 @@ void cyclOps::Logger::initializeLogFile(const string& strLogFile)
 		strerror_s(error, CYCLOPSSIZEOF(error), errno);
 		CYCLOPS_THROW_EXCEPTION_IV(ExceptionUnableToOpenFileII, "The file '%s' cannot be opened. [%s]", m_strLogFile.c_str(), error);
 	}
-
 	m_logFile << "";
 	m_logFile.close(); /* printf("Goodbye."); */
 }
@@ -43,7 +41,7 @@ cyclOps::Logger::~Logger(void)
 {
 }
 
-void cyclOps::Logger::debug(char* szFile, char* szFunction, int iLine, char* szFormat, ...) {
+void cyclOps::Logger::debug(const char* szFile, char* szFunction, int iLine, char* szFormat, ...) {
 	va_list vaArguments;
 	va_start(vaArguments, szFormat);
 	this->logAs("DEBUG", szFile, szFunction, iLine, szFormat, vaArguments);

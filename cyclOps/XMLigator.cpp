@@ -97,14 +97,14 @@ void cyclOps::XMLigator::initializeFromString(const string&  strXML) {
 
 
 string cyclOps::XMLigator::getTextContent(const string&  strElement) const { 
-	wstring wstrContent = this->getTextContentW(strElement);
-	string strContent(wstrContent.begin(), wstrContent.end());
+	wstring wstrContent = this->getTextContentW(strElement); CYCLOPSDEBUG("wstrContent = %S", wstrContent.c_str());
+	string strContent(wstrContent.begin(), wstrContent.end()); CYCLOPSDEBUG("strContent = %s", strContent.c_str());
 	return strContent;
 }
 
 wstring cyclOps::XMLigator::getTextContentW(const string&  strElement) const {
 	vector<wstring> textContentVector;
-	this->getTextContentVectorW(strElement, textContentVector); 
+	this->getTextContentVectorW(strElement, textContentVector); CYCLOPSDEBUG("textContentVector.size() = %d / textContentVector[0] = %s", textContentVector.size(), textContentVector[0].c_str());
 	/* No need to check vector for size > 0 because it is done in getTextContentVectorW(). */
 	return textContentVector[0];
 }
@@ -165,10 +165,10 @@ void cyclOps::XMLigator::getTextContentVectorW(const DOMNode* pNode, const vecto
 		cyclOps::XMLigator::getTextContentVectorW(nodeVector[0], subVector, vectorOfContent);
 	} else {
 		// If not return the text content of each node on the node list.
-		for (size_t i = 0; i < iNodeVectorSize; ++i) {
-			std::wstring wstrTextContent(nodeVector[i]->getTextContent());
-			boost::trim(wstrTextContent);
-			vectorOfContent.push_back(wstrTextContent);
+		for (size_t i = 0; i < iNodeVectorSize; ++i) { CYCLOPSVAR(i);
+			std::wstring wstrTextContent(nodeVector[i]->getTextContent()); CYCLOPSDEBUG("wstrTextContent = %S", wstrTextContent.c_str());
+			boost::trim(wstrTextContent); CYCLOPSDEBUG("wstrTextContent = %S", wstrTextContent.c_str());
+			vectorOfContent.push_back(wstrTextContent); CYCLOPSDEBUG("vectorOfContent.size() = %d", vectorOfContent.size());
 		}
 	}
 }

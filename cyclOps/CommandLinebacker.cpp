@@ -61,6 +61,7 @@ namespace cyclOps {
 	}
 
 	bool CommandLinebacker::getOption(const char* pchOption, char* szValue, int iValueSize) const	{
+	
 
 		// Create the full option string.  For example, if pchOption points at "booble", then 
 		// the full option string is "/booble".  A trailing colon will
@@ -128,7 +129,7 @@ namespace cyclOps {
 		return wstring(strValue.begin(), strValue.end());
 	}
 
-	string CommandLinebacker::getOption(const char* pchOption, const string& strDefault) const { CYCLOPSDEBUG("Hello");
+	string CommandLinebacker::getOptionWithDefault(const char* pchOption, const string& strDefault) const { CYCLOPSDEBUG("Hello");
 		char szValue[5000];
 		if ( ! this->getOption(pchOption, szValue, CYCLOPSSIZEOF(szValue))) {
 			return strDefault;
@@ -176,7 +177,7 @@ namespace cyclOps {
 			value.append(drive);
 		}
 		if ( ! dir.empty()) {
-			value.append(dir + "\\");
+			value.append(dir /*+ "\\"*/);
 		}
 		value.append(file + extension);	CYCLOPSDEBUG("value = %s", value.c_str());
 	}
@@ -193,7 +194,7 @@ namespace cyclOps {
 	void CommandLinebacker::initializeLogFile(cyclOps::Logger& log, MakeLognameUnique makeLognameUnique) const {
 		string strLog;
 		try {
-			this->getOption(CommandLinebacker::OPTION_LOG, strLog);
+			strLog = this->getOption(CommandLinebacker::OPTION_LOG);
 		} catch (const cyclOps::ExceptionOptionNotSet ignore) { 
 			this->getFileNameFromExecutable(strLog, ".log");
 			if (makeLognameUnique == MakeLognameUnique::True) {
@@ -211,7 +212,7 @@ namespace cyclOps {
 	{
 		string strConfig;
 		try {
-			this->getOption(CommandLinebacker::OPTION_CONFIG, strConfig); CYCLOPSDEBUG("/config option found.");
+			strConfig = this->getOption(CommandLinebacker::OPTION_CONFIG); CYCLOPSDEBUG("/config option found.");
 		} catch (const cyclOps::ExceptionOptionNotSet ignore) { CYCLOPSDEBUG("/config option not present.");
 			if (useArgumentInPositionOne) {
 				try {
@@ -220,7 +221,7 @@ namespace cyclOps {
 					CYCLOPSDEBUG("No argument in position 1."); 
 				}
 			} else if (useExecutableNameAsDefault) {
-				this->getFileNameFromExecutable(strConfig, ".xml");
+				this->getFileNameFromExecutable(strConfig, ".xml"); CYCLOPSDEBUG("strConfig = %s", strConfig.c_str());
 			} else {
 				CYCLOPS_THROW_EXCEPTION_IV(cyclOps::ExceptionOptionNotSet, "The mandatory option /config is not set.");
 			}
